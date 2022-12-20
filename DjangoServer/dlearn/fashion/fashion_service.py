@@ -21,7 +21,7 @@ class FashionService:
         self.service_model(feature)
 
     def service_model(self, feature) -> int:
-        model = load_model(os.path.join(os.path.abspath(r".\save"), "fashion_model.h5"))
+        model = load_model(os.path.join(os.path.abspath("./save"), "fashion_model.h5"))
         (train_images, train_labels), (test_images, test_labels) = keras.datasets.fashion_mnist.load_data()
         predictions = model.predict(test_images)
         predictions_array, true_label, img = predictions[feature], test_labels[feature], test_images[feature]

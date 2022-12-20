@@ -49,7 +49,7 @@ class IrisModel:
         model.fit(X, Y_1hot, epochs=300, batch_size=10)
         print('Model Training is completed')
 
-        file_name = r'C:\Users\AIA\PycharmProjects\djangoProject\movie\theater_tickets\save\iris_model.h5'
+        file_name = r'C:\Users\AIA\PycharmProjects\django-react\DjangoServer\dlearn\iris\save\iris_model.h5'
         model.save(file_name)
         print(f'Model Saved in {file_name}')
 

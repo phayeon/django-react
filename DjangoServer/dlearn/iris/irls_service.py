@@ -1,6 +1,5 @@
 import numpy as np
 from keras.models import load_model
-import tensorflow as tf
 from sklearn import datasets
 
 '''
@@ -12,28 +11,24 @@ Classify iris plants into three species in this classic dataset
 class IrisService:
     def __init__(self):
         global model, graph, target_names
-        model = load_model(r'C:\Users\AIA\PycharmProjects\django-react\DjangoServer\movie\theater_tickets\save\iris_model.h5')
+        model = load_model(r'C:\Users\AIA\PycharmProjects\django-react\DjangoServer\dlearn\iris\save\iris_model.h5')
         target_names = datasets.load_iris().target_names
-
-    def hook(self, features):
-        self.service_model(features)
 
     def service_model(self, features):
         features = np.reshape(features, (1, 4))
         Y_pred = model.predict(features, verbose=0)
         predicted = Y_pred.argmax(axis=-1)
         if predicted == 0:
-            print('setosa / 부채붓꽃')
+            return 'setosa / 부채붓꽃'
         elif predicted == 1:
-            print('versicolor / 버시칼라 ')
+            return 'versicolor / 버시칼라'
         elif predicted == 2:
-            print('virginica / 버지니카')
-        return predicted[0]
+            return 'virginica / 버지니카'
 
 
 IRIS_MENUS = ["종료", "보기"]
 iris_menu = {
-    "1": lambda x: x.hook()
+    "1": lambda x: x.service_model()
 }
 
 if __name__ == '__main__':

@@ -5,7 +5,6 @@ from urllib.request import urlopen
 import pandas as pd
 from bs4 import BeautifulSoup
 from selenium import webdriver
-import os.path
 from os import path
 
 

@@ -3,8 +3,8 @@ import {Navigation2, Counter, Footer} from "cmm"
 import {Schedule} from "cop"
 import {LoginForm, SignUp} from "uat"
 import fashion from 'images/fashion.png'
-import { Stroke, Iris, Number } from "movie"
-import { Fashion } from "dlearn"
+import { Number } from "movie"
+import { Iris, Stroke, Fashion } from "dlearn"
 import { NaverMovie } from "webcrawler"
 
 

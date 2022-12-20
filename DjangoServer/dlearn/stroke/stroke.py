@@ -68,7 +68,7 @@ dtypes: float64(3), int64(4), object(5)
 
 class StrokeService:
     def __init__(self):
-        self.stroke = pd.read_csv(r'C:\Users\AIA\PycharmProjects\djangoProject\movie\theater_tickets\data\stroke\healthcare-dataset-stroke-data.csv')
+        self.stroke = pd.read_csv(r'C:\Users\AIA\PycharmProjects\django-react\DjangoServer\dlearn\stroke\data\healthcare-dataset-stroke-data.csv')
         self.my_stroke = self.stroke.rename(columns=stroke_meta)
         self.adult_stroke = copy.deepcopy(self.my_stroke)
         self.data = None
@@ -161,14 +161,14 @@ class StrokeService:
 
         self.stroke = self.adult_stroke
         self.spec()
-        self.stroke.to_csv(r'C:\Users\AIA\PycharmProjects\djangoProject\movie\theater_tickets\save\stroke\stroke.csv', index=False)
+        self.stroke.to_csv(r'C:\Users\AIA\PycharmProjects\django-react\DjangoServer\dlearn\stroke\save\stroke.csv', index=False)
         print(" ### 프리 프로세스 종료 ### ")
 
     def ordinal_variables(self):  # 해당 칼럼이 없음
         pass
 
     def targetting(self):
-        df = pd.read_csv(r'C:\Users\AIA\PycharmProjects\djangoProject\movie\theater_tickets\save\stroke\stroke.csv')
+        df = pd.read_csv(r'C:\Users\AIA\PycharmProjects\django-react\DjangoServer\dlearn\stroke\save\stroke.csv')
         self.data = df.drop(['뇌졸중'], axis=1)
         self.data = self.data.drop(['아이디'], axis=1) # 오버피팅 방지를 위해 아이디 삭제
         self.target = df['뇌졸중']

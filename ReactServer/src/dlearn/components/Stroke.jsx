@@ -1,11 +1,11 @@
-import { strokeCheck } from "../api"
+import dlearnService from "../api"
 
 const Stroke = () => {
 
     const strokeClick = e => {
         e.preventDefault()
         alert(`뇌졸중 체크 시작`)
-        strokeCheck(Request)
+        dlearnService.strokeCheck(Request)
     }
     
     return (
