@@ -12,7 +12,7 @@ Classify iris plants into three species in this classic dataset
 class IrisService:
     def __init__(self):
         global model, graph, target_names
-        model = load_model(r'C:\Users\AIA\PycharmProjects\djangoProject\movie\theater_tickets\save\iris_model.h5')
+        model = load_model(r'C:\Users\AIA\PycharmProjects\django-react\DjangoServer\movie\theater_tickets\save\iris_model.h5')
         target_names = datasets.load_iris().target_names
 
     def hook(self, features):

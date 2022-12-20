@@ -3,7 +3,9 @@ import {Navigation2, Counter, Footer} from "cmm"
 import {Schedule} from "cop"
 import {LoginForm, SignUp} from "uat"
 import fashion from 'images/fashion.png'
-import { Stroke, Iris, Fashion, Number } from "movie"
+import { Stroke, Iris, Number } from "movie"
+import { Fashion } from "dlearn"
+import { NaverMovie } from "webcrawler"
 
 
 const Home = () => {
@@ -29,6 +31,7 @@ const Home = () => {
                 <Route path="/iris" element={<Iris/>}></Route>
                 <Route path="/fashion" element={<Fashion/>}></Route>
                 <Route path="/number" element={<Number/>}></Route>
+                <Route path="/naver-movie" element={<NaverMovie/>}></Route>
             </Routes>
             </td>
         </tr>
