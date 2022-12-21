@@ -57,11 +57,8 @@ class ScrapService(object):
         if path.exists(r"C:\Users\AIA\PycharmProjects\django-react\DjangoServer\webcrawler\save\naver_movie_rank.csv") == True:
             data = pd.read_csv(
                 r"C:\Users\AIA\PycharmProjects\django-react\DjangoServer\webcrawler\save\naver_movie_rank.csv")
-            result = []
-            for i, j in enumerate(data):
-                i = {'rank': i + 1, 'title': j}
-                result.append(i)
-                print(result)
+            result = [{'rank': i + 1, 'title': j} for i, j in enumerate(data)]
+            print(result)
             return result
         else:
             options = webdriver.ChromeOptions()
