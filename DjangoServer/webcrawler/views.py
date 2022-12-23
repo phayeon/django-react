@@ -1,14 +1,15 @@
 from django.http import JsonResponse
-
-from webcrawler.services import ScrapService
-
 from rest_framework.decorators import api_view
+from webcrawler.services import ScrapService
 
 
 @api_view(['GET'])
 def naver_movie(request):
-    return JsonResponse(
-        {'result': ScrapService().naver_movie_review()})
+    if request.method == 'GET':
+        return JsonResponse(
+            {'영화': ScrapService().naver_movie_review()})
+    else:
+        return JsonResponse({'result': 'error'})
 
 '''
 class ScrapController(object):

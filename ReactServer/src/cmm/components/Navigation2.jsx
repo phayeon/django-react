@@ -19,6 +19,7 @@ const Navigation2 = () => {
             <BottomNavigationAction label="Home" icon={<FavoriteIcon/>} component={Link} to="/home"/>
             <BottomNavigationAction label="Counter" icon={<FavoriteIcon/>} component={Link} to="/Counter"/>
             <BottomNavigationAction label="Todos" icon={<FavoriteIcon/>} component={Link} to="/todos"/>
+<<<<<<< HEAD
             <BottomNavigationAction label="Signup" icon={<FavoriteIcon/>} component={Link} to="/signup"/>
             <BottomNavigationAction label="Login" icon={<FavoriteIcon/>} component={Link} to="/login"/>
             <BottomNavigationAction label="Stroke" icon={<FavoriteIcon/>} component={Link} to="/stroke"/>
@@ -26,6 +27,16 @@ const Navigation2 = () => {
             <BottomNavigationAction label="Fashion" icon={<FavoriteIcon/>} component={Link} to="/fashion"/>
             <BottomNavigationAction label="Number" icon={<FavoriteIcon/>} component={Link} to="/number"/>
             <BottomNavigationAction label="NaverMovie" icon={<FavoriteIcon/>} component={Link} to="/naver-movie"/>
+            <BottomNavigationAction label="Report" icon={<FavoriteIcon/>} component={Link} to="/report-view"/>
+=======
+            <BottomNavigationAction label="Signup" icon={<FavoriteIcon/>} component={Link} Link to="/signup"/>
+            <BottomNavigationAction label="Login" icon={<FavoriteIcon/>} component={Link} Link to="/login"/>
+            <BottomNavigationAction label="Stroke" icon={<FavoriteIcon/>} component={Link} Link to="/stroke"/>
+            <BottomNavigationAction label="Iris" icon={<FavoriteIcon/>} component={Link} Link to="/iris"/>
+            <BottomNavigationAction label="Fashion" icon={<FavoriteIcon/>} component={Link} Link to="/fashion"/>
+            <BottomNavigationAction label="Number" icon={<FavoriteIcon/>} component={Link} Link to="/number"/>
+            <BottomNavigationAction label="NaverMovie" icon={<FavoriteIcon/>} component={Link} Link to="/naver-movie"/>
+>>>>>>> parent of f72477c (12-21 16:02)
         </BottomNavigation>
         </Box>
     );

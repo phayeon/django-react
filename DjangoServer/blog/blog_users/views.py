@@ -10,4 +10,4 @@ def login(request):
 
 @api_view(['GET'])
 def sign_up(request):
-    return JsonResponse({'result ': UserService().creat_users()})
+    return JsonResponse({'result ': UserService().get_users()})

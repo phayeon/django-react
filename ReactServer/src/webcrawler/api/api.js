@@ -1,8 +1,6 @@
 import { server, webcrawler } from '../../context'
 
-const CrawlerService = {
-    navermovieGet
-}
+const CrawlerService = { navermovieGet }
 
 function handleResponse(response){ 
     return response.text()
@@ -21,13 +19,14 @@ function handleResponse(response){
     }
 
 async function navermovieGet(){
-    const res = await fetch(`${server}${webcrawler}naver-movie-get`)
+    fetch(`${server}${webcrawler}naver-movie-get`)
     .then(handleResponse)
-    .then(data => JSON.stringify(data))
+    .then(data => {
+        alert(JSON.stringify(data))
+    })
     .catch((error) => {
         alert('error :::: '+error);
     });
-    return Promise.resolve(res);
 } 
 
 export default CrawlerService

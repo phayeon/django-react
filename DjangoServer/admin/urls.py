@@ -23,5 +23,6 @@ urlpatterns = [
     path("movie/theater_tickets/", include('movie.theater_tickets.urls')),
     path("dlearn/", include('dlearn.urls')),
     path("webcrawler/", include('webcrawler.urls')),
-    path("blog/", include('blog.blog_users.urls'))
+    path("blog/", include('blog.blog_users.urls')),
+    path("nlp/", include('nlp.urls'))
 ]

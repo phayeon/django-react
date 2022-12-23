@@ -55,11 +55,16 @@ class ScrapService(object):
 
     def naver_movie_review(self):
         if path.exists(r"C:\Users\AIA\PycharmProjects\django-react\DjangoServer\webcrawler\save\naver_movie_rank.csv") == True:
-            data = pd.read_csv(
+            rank = pd.read_csv(
                 r"C:\Users\AIA\PycharmProjects\django-react\DjangoServer\webcrawler\save\naver_movie_rank.csv")
+<<<<<<< HEAD
             result = [{'rank': i + 1, 'title': j} for i, j in enumerate(data)]
             print(result)
             return result
+=======
+            result = [f'{i+1}위 : {j}' for i, j in enumerate(rank)]
+            return result[0]
+>>>>>>> parent of f72477c (12-21 16:02)
         else:
             options = webdriver.ChromeOptions()
             options.add_experimental_option('excludeSwitches', ['enable-logging'])
@@ -77,4 +82,4 @@ class ScrapService(object):
                 wr = csv.writer(f)
                 wr.writerows(products)
             driver.close()
-            return products[0][0]
+            return "크롤링 완료"

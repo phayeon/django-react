@@ -7,14 +7,7 @@ from sqlalchemy import create_engine
 
 class UserService(object):
     def __init__(self):
-        pass
-
-    def creat_users(self):
-        user_info = [{'email': ''.join([(''.join(random.choices(string.ascii_lowercase, k=5))), '@gmail.com']),
-                  'nickname': ''.join(random.choices(string.ascii_lowercase, k=5)),
-                  'password': 'qwe123'} for i in range(100)]
-
-        df = pd.DataFrame(user_info)
+        global engine
 
         # conda install -c anaconda sqlalchemy
         # conda install pymysql
@@ -23,10 +16,18 @@ class UserService(object):
             "mysql+pymysql://root:root@localhost:3306/mydb",
             encoding='utf-8')
 
+    def creat_users(self):
+        ran_str = ''.join(random.choices(string.ascii_lowercase, k=5))
+        user_info = [{'email': ''.join([ran_str, '@gmail.com']),
+                  'nickname': ran_str,
+                  'password': 'qwe123'} for i in range(100)]
+
+        df = pd.DataFrame(user_info)
+
         # pip install sqlalchemy==1.4.0
 
         df.to_sql(name='blog_user',
-                  if_exists='append', # append 계속 쓰면 쌓인다. 적당히 써라.
+                  if_exists='append',   # append 계속 쓰면 쌓인다. 적당히 써라.
                   con=engine,
                   index=False)
 

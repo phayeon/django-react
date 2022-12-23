@@ -33,7 +33,7 @@ requests~=2.25.1
 seaborn
 selenium==3.141.0
 six==1.15.0
-SQLAlchemy==1.4.0
+SQLAlchemy==1.4.45
 tensorflow~=2.7.0
 tqdm~=4.64.1
 urllib3==1.25.10
@@ -42,7 +42,6 @@ wincertstore==0.2
 torch~=1.7.1+cu110
 django~=4.1
 pathlib~=1.0.1
-
 djangorestframework~=3.14.0
 matplotlib~=3.5.3
 opencv-python~=4.6.0.66
@@ -54,3 +53,4 @@ openface~=0.2.1
 ipython~=7.31.1
 dataclasses~=0.8
 pillow~=9.2.0
+tensorflow-datasets~=4.8.0
