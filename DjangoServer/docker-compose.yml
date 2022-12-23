@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  database:
+    image: mysql
+    container_name: gbgrdb  # 프로젝트 작업 시 팀 이름으로 설정, DB 이름과 무관함.
+    volumes:
+      - ~/docker/mysql/etc/mysql/conf.d:/etc/mysql/conf.d:ro
+      - ~/docker/mysql/var/lib/mysql:/var/lib/mysql
+      - ~/docker/mysql/var/log/mysql:/var/log/mysql
+    environment:
+      - MYSQL_DATABASE=gbgrdb
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_ROOT_HOST=% # % = 현재 호스트 사용
+    command: [ '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci' ]
+    # command 안의 내용은 한글이라 바뀌지 않으니, 그대로 사용하면 됨.
+  web:
+    image: gbgrdj:v1
+    build: .
+    container_name: gbgrdj
+    command:
+      - python manage.py runserver 0:8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/mydb
+    expose:
+      - '8000'  # Dockerfile의 CMD [포트번호]와 동일해야 함.
