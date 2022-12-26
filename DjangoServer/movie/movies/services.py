@@ -1,10 +1,8 @@
-import argparse
 import os
 import random
 import torch
 import torch.nn as nn
 import torch.nn.parallel
-import torch.backends.cudnn as cudnn
 import torch.optim as optim
 import torch.utils.data
 import torchvision.datasets as dset
@@ -12,13 +10,10 @@ import torchvision.transforms as transforms
 import torchvision.utils as vutils
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.animation as animation
-from IPython.display import HTML
 from tqdm import tqdm
-import sys
 import dlib  # conda install -c conda-forge dlib
 import cv2
-import openface
+# import openface 모듈 임시 제거
 '''
 --- openface install ---
 mkdir openface
@@ -363,7 +358,8 @@ class MyDlib(object):
 
         # 랜드마크를 이용해 얼굴을 정렬할 클래스 생성 - Openface
         # 매개변수로 랜드마크 모델
-        face_aligner = openface.AlignDlib(predictor_model)
+        # face_aligner = openface.AlignDlib(predictor_model)
+        face_aligner = None
 
         # 첫번째 매개변수로 부터 전달 받은 이미지 파일 경로
         file_name = r"C:\Users\AIA\PycharmProjects\djangoProject\movie\movies\data\celeba\000001.jpg"
@@ -400,8 +396,10 @@ class MyDlib(object):
 
             # 얼굴 위치에서 랜드마크 찾기
             pose_landmarks = face_pose_predictor(image, face_rect)
-            alignedFace = face_aligner.align(532, image, face_rect,
-                                             landmarkIndices=openface.AlignDlib.OUTER_EYES_AND_NOSE)
+
+            # alignedFace = face_aligner.align(532, image, face_rect, landmarkIndices=openface.AlignDlib.OUTER_EYES_AND_NOSE)
+            alignedFace = None
+
             '''
             alignedFace 는 RGB(ndarray) 이미지      
             '''

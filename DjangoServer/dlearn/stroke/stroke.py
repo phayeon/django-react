@@ -10,10 +10,11 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import GridSearchCV
 import seaborn as sns
 import matplotlib.pyplot as plt
+'''
 font_path = "C:/Windows/Fonts/malgunbd.ttf"
 font = font_manager.FontProperties(fname=font_path).get_name()
 rc('font', family=font)
-
+'''
 STROKE_MENUS = ["종료",  # 0
                 "데이터 구조 파악(Spec)",  # 1
                 "변수 한글화(Rename)",  # 2

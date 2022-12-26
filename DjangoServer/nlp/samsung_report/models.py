@@ -1,4 +1,3 @@
-import nltk
 from nltk.tokenize import word_tokenize
 from konlpy.tag import Okt
 import pandas as pd

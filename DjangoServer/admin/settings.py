@@ -85,7 +85,7 @@ WSGI_APPLICATION = "admin.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "mydb", # 사용할 DB 이름으로 변경
+        "NAME": "gbgrdb", # 사용할 DB 이름으로 변경
         "USER": "root",
         "PASSWORD": "root",
         "HOST": "localhost",
