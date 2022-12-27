@@ -18,7 +18,7 @@ const SamsungReport = () => {
     <>
         <h2> Samsung-Report </h2>
         <button onClick={onClick}>추출 시작</button><br/>
-        <p>버튼을 클릭하시면, 네이버 영화 목록이 출력됩니다.</p>
+        <p>버튼을 클릭하시면, 단어와 빈도수 목록이 출력됩니다.</p>
         <table>
             <thead>
                 <tr>

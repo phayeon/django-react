@@ -27,6 +27,7 @@ const SignUp = () => {
         <button onClick={onClick}>사용자 등록</button><br/>
         <p>버튼을 클릭하시면, 더미 사용자 100명이 등록됩니다.</p>
         <table>
+            
         </table>
     </>)
 }

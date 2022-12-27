@@ -7,3 +7,4 @@ from nlp.samsung_report.services import SamsungService
 @api_view(['GET'])
 def report_Get(request):
     return JsonResponse({'result': SamsungService().data_analysis()})
+

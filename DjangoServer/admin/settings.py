@@ -37,9 +37,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "blog",
-    "movie",
-    "shop",
+    "blog.blog_users", "blog.comment", "blog.posts", "blog.tags", "blog.view",
+    "movie.cienmas", "movie.movie_users", "movie.movies", "movie.showtimes",
+    "movie.theater_tickets", "movie.theaters",
+    "shop.carts", "shop.categories", "shop.deliveries", "shop.orders", "shop.products", "shop.shop_users",
     "rest_framework"
 ]
 
@@ -85,7 +86,7 @@ WSGI_APPLICATION = "admin.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "gbgrdb", # 사용할 DB 이름으로 변경
+        "NAME": "mydb", # 사용할 DB 이름으로 변경
         "USER": "root",
         "PASSWORD": "root",
         "HOST": "localhost",
