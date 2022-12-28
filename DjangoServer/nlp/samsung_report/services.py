@@ -40,7 +40,7 @@ class SamsungService:
 
     def data_analysis(self):
         self.entity.fname = '\kr-Report_2018.txt'
-        self.entity.context = r'C:\Users\AIA\PycharmProjects\django-react\DjangoServer\nlp\data'
+        self.entity.context = r'C:\Users\AIA\PycharmProjects\django-react\DjangoServer\nlp\samsung_report\data'
         self.service.extract_tokens(self.entity)
         self.service.extract_hangeul()
         self.service.conversion_token()
@@ -49,7 +49,7 @@ class SamsungService:
         self.service.extract_stopword(self.entity)
         self.service.filtering_text_with_stopword()
         return self.service.frequent_text()
-        # self.entity.fname = '\D2Coding.ttf'
+        # self.entity.fname = r'\D2Coding.ttf'
         # self.service.draw_wordcloud(self.entity)
 
 if __name__ == '__main__':

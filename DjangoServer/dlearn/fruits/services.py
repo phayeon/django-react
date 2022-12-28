@@ -11,7 +11,7 @@ from keras.callbacks import ModelCheckpoint
 
 class FruitsService:
     def __init__(self):
-        global class_names, trainpath, testpath, Apple_Braeburn_train, \
+        global trainpath, testpath, Apple_Braeburn_train, \
             Apple_Crimson_Snow_train, Apple_Golden_1_train, Apple_Golden_2_train, \
             Apple_Golden_3_train, Apple_Braeburn_test, Apple_Crimson_Snow_test, \
             Apple_Golden_1_test, Apple_Golden_2_test, Apple_Golden_3_test, \
@@ -177,4 +177,4 @@ class FruitsService:
 
 
 if __name__ == '__main__':
-    FruitsService().hook()
+    FruitsService().modify_prefetch()
