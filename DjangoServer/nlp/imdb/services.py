@@ -1,3 +1,4 @@
+import os
 import time
 from math import log, exp
 from os import path
@@ -22,13 +23,15 @@ class NaverMovieService(object):
         chrome_driver = r'C:\Users\AIA\PycharmProjects\django-react\DjangoServer\webcrawler\chromedriver.exe'
         naver_path = f'https://movie.naver.com/movie/point/af/list.naver?&page='
         review_train = r'C:\Users\AIA\PycharmProjects\django-react\DjangoServer\nlp\imdb\data\review_train.csv'
+        # review_train = os.path.join(os.getcwd(), 'nlp', 'imdb', 'data', 'review_train.csv')
         k = 0.5
+        word_probs = []
         word_probs = []
 
     def process(self, req):
         service = NaverMovieService()
         service.model_fit()
-        result = service.classify(req)
+        result = round(service.classify(req), 3)
         return result
 
     def crawling(self):
@@ -125,4 +128,4 @@ class NaverMovieService(object):
 
 if __name__ == '__main__':
     result = NaverMovieService().process('진짜 별로')
-    print(f"긍정률 : {round(result, 2)}")
+    print(f"긍정률 : {result}")

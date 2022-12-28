@@ -9,5 +9,5 @@ def login(request):
     return JsonResponse({'result ': UserService().creat_users()})
 
 @api_view(['GET'])
-def sign_up(request):
+def user_list(request):
     return JsonResponse({'result ': UserService().creat_users()})

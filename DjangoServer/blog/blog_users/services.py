@@ -39,14 +39,14 @@ class UserService(object):
 
     def creat_users(self):
         user_info = [{'email': ''.join([lambda_string(5), '@gmail.com']),
-                  'user_name': lambda_k_name(first_names, name_words),
+                  'nickname': lambda_k_name(first_names, name_words),
                   'password': 'qwe123'} for i in range(100)]
 
         df = pd.DataFrame(user_info)
 
         # pip install sqlalchemy==1.4.0
 
-        df.to_sql(name='blog_user',
+        df.to_sql(name='blog_users',
                   if_exists='append',   # append 계속 쓰면 쌓인다. 적당히 써라.
                   con=engine,
                   index=False)
