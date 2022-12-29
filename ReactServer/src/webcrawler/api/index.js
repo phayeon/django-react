@@ -19,14 +19,13 @@ function handleResponse(response){
     }
 
 async function navermovieGet(){
-    fetch(`${server}${webcrawler}naver-movie-get`)
+    const res = fetch(`${server}${webcrawler}naver-movie-get`)
     .then(handleResponse)
-    .then(data => {
-        alert(JSON.stringify(data))
-    })
+    .then(data => JSON.stringify(data))
     .catch((error) => {
         alert('error :::: '+error);
     });
+    return Promise.resolve(res);
 } 
 
 async function movieReviewPost(review_text){
@@ -35,14 +34,13 @@ async function movieReviewPost(review_text){
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify(review_text)
 }
-    fetch(`${server}${nlp}movie-review-post`, requestOption)
+    const res = fetch(`${server}${nlp}movie-review-post`, requestOption)
     .then(handleResponse)
-    .then(data => {
-        alert(JSON.stringify(data))
-    })
+    .then(data => JSON.stringify(data))
     .catch((error) => {
         alert('error :::: '+error);
     });
+    return Promise.resolve(res);
 } 
 
 export default CrawlerService

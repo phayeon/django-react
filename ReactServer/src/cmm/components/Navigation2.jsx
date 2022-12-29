@@ -8,7 +8,7 @@ import { Link } from "react-router-dom"
 const Navigation2 = () => {
     const [value, setValue] = React.useState(0);
     return (
-        <Box sx={{ width: 500 }}>
+        <Box sx={{ margin: "auto" }}>
         <BottomNavigation
             showLabels
             value={value}
@@ -27,7 +27,7 @@ const Navigation2 = () => {
             <BottomNavigationAction label="Number" icon={<FavoriteIcon/>} component={Link} to="/number"/>
             <BottomNavigationAction label="NaverMovie" icon={<FavoriteIcon/>} component={Link} to="/naver-movie"/>
             <BottomNavigationAction label="Report" icon={<FavoriteIcon/>} component={Link} to="/report-view"/>
-
+            <BottomNavigationAction label="UserList" icon={<FavoriteIcon/>} component={Link} to="/user-list"/>
         </BottomNavigation>
         </Box>
     );

@@ -24,7 +24,7 @@ function handleResponse(response){
     }
 
 async function blogPost(){
-    const res = await fetch(`${server}${blog}signup-post`)
+    const res = fetch(`${server}${blog}user-create`)
     .then(handleResponse)
     .then(data => JSON.stringify(data))
     .catch((error) => {

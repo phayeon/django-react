@@ -7,6 +7,7 @@ import { Number } from "movie"
 import { Iris, Stroke, Fashion } from "dlearn"
 import { NaverMovie } from "webcrawler"
 import { SamsungReport } from "nlp"
+import UserList from "uat/containers/UserList"
 
 
 const Home = () => {
@@ -34,6 +35,7 @@ const Home = () => {
                 <Route path="/number" element={<Number/>}></Route>
                 <Route path="/naver-movie" element={<NaverMovie/>}></Route>
                 <Route path="/report-view" element={<SamsungReport/>}></Route>
+                <Route path="/user-list" element={<UserList/>}></Route>
             </Routes>
             </td>
         </tr>

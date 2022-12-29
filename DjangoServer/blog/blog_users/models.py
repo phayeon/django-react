@@ -8,9 +8,10 @@ class BlogUser(models.Model):
     email = models.CharField(max_length=20)
     nickname = models.CharField(max_length=20)
     password = models.CharField(max_length=20)
+    token = models.CharField(max_length=20)
 
     class Meta:
         db_table = "blog_users"
 
     def __str__(self):
-        return f'{self.pk} {self.email} {self.nickname} {self.password}'
+        return f'{self.pk} {self.email} {self.nickname}'

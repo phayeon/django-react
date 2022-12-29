@@ -39,8 +39,9 @@ class UserService(object):
 
     def creat_users(self):
         user_info = [{'email': ''.join([lambda_string(5), '@gmail.com']),
-                  'nickname': lambda_k_name(first_names, name_words),
-                  'password': 'qwe123'} for i in range(100)]
+                      'nickname': lambda_k_name(first_names, name_words),
+                      'password': 'qwe123',
+                      'token': 'JWT fefege..'} for i in range(100)]
 
         df = pd.DataFrame(user_info)
 
@@ -56,6 +57,14 @@ class UserService(object):
 
         # 쿼리문으로 테이블 '데이터'만 삭제하기
         # 테이블 삭제하면 다시 만들어야 해서 귀찮아짐
+
+    def get_users(self):
+        print(" 포스트맨의 요청이 도달하였음 !! ")
+        pass
+
+    def user_login(self):
+        pass
+
 
 
 if __name__ == '__main__':

@@ -1,9 +1,11 @@
-import '../styles/Login.css'
 import { useState } from "react"
 import { userLogin } from '../api'
-const Login = () => {
+import { useNavigate } from 'react-router-dom'
+
+export default function Login(){
     const [inputs, setInputs] = useState({})
-    const {email, password} = inputs;
+    const {email, nickname, password} = inputs;
+    const navigate = useNavigate()
 
     const onChange = e => {
         e.preventDefault()
@@ -12,12 +14,13 @@ const Login = () => {
     }
     const onClick = e => {
         e.preventDefault()
-        const Request = {email, password}
+        const Request = {email, nickname, password}
         alert(`사용자 이름: ${JSON.stringify(Request)}`)
         userLogin(Request)
         .then((res) => {
-            console.log(`response is ${res.config.data}`)
-            localStorage.setItem('token', JSON.stringify(res.config.data))
+            localStorage.setItem('loginUser', JSON.stringify(res.data))
+            alert(`response is ${localStorage.getItem('loginUser')}`)
+            navigate('/home')
         })
         .catch((err) => {
             console.log(err)
@@ -28,10 +31,10 @@ const Login = () => {
     return (
     <>
         Email: <input type="text" name="email" onChange={onChange} /><br/>
+        Nickname: <input type="text" name="nickname" onChange={onChange} /><br/>
         PASSWORD: <input type="text" name="password" onChange={onChange} /><br/>
         <button onClick={onClick}> 로그인 </button>
 
     
     </>
 )}
-export default Login
