@@ -15,12 +15,12 @@ export default function Login(){
     const onClick = e => {
         e.preventDefault()
         const Request = {email, nickname, password}
-        alert(`사용자 이름: ${JSON.stringify(Request)}`)
+        alert(`사용자 정보는 ${JSON.stringify(Request)} 이 맞습니까?`)
         userLogin(Request)
         .then((res) => {
             localStorage.setItem('loginUser', JSON.stringify(res.data))
             alert(`response is ${localStorage.getItem('loginUser')}`)
-            navigate('/home')
+            navigate("/home")
         })
         .catch((err) => {
             console.log(err)

@@ -25,6 +25,7 @@ const Home = () => {
         <tr style={{ width: "20%",height: "80%",  border: "1px solid black"}}>
             <td style={{ width: "100%", border: "1px solid black"}}>
             <Routes>
+                <Route path="/home"></Route>
                 <Route path="/counter" element={<Counter/>}></Route>
                 <Route path="/todos" element={<Schedule/>}></Route>
                 <Route path="/login" element={<LoginForm/>}></Route>

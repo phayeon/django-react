@@ -1,5 +1,4 @@
 from django.db import models
-
 from movie.cienmas.models import Cinema
 
 
