@@ -7,7 +7,6 @@ from keras.layers import Dense
 from keras.models import Sequential
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-
 warnings.filterwarnings('ignore')
 import pandas_datareader.data as web
 from pandas_datareader import data
@@ -89,10 +88,6 @@ class AITraderService(object):
             else:
                 SAMSUNG['변동 %'][i] = float(SAMSUNG['변동 %'][i][0:len(SAMSUNG['변동 %'][i])-1])
 
-        for i in range(601):
-            for j in range(0, 4):
-                SAMSUNG.iloc[i, j] = float(SAMSUNG.iloc[i, j].replace(',', ''))
-
         for i in range(600):
             if pd.isna(KOSPI200['거래량'][i]) == False:
                 KOSPI200['거래량'][i] = float(KOSPI200['거래량'][i][0:len(KOSPI200['거래량'][i])-1])
@@ -104,6 +99,10 @@ class AITraderService(object):
                 KOSPI200['변동 %'][i] = 0
             else:
                 KOSPI200['변동 %'][i] = float(KOSPI200['변동 %'][i][0:len(KOSPI200['변동 %'][i])-1])
+
+        for i in range(601):
+            for j in range(0, 4):
+                SAMSUNG.iloc[i, j] = float(SAMSUNG.iloc[i, j].replace(',', ''))
 
         for i in range(600):
             for j in range(0, 4):
@@ -148,7 +147,7 @@ class AITraderService(object):
         x, y = self.split_xy6(SAMSUNG, 6, 1)
         # print(x[0, :], '\n', y[0])
         x_train, x_test, y_train, y_test = train_test_split(x, y, random_state=1, test_size=0.3)
-        x_train = np.reshape(x_train, (x_train.shape[0], x_train.shape[1] * x_train.shape[2]), 1)
+        x_train = np.reshape(x_train, (x_train.shape[0], x_train.shape[1] * x_train.shape[2]))
         x_test = np.reshape(x_test, (x_test.shape[0], x_test.shape[1] * x_test.shape[2]))
         print(x_train)
         print(x_test)
@@ -165,14 +164,15 @@ class AITraderService(object):
     def create_model(self):
         global model
         model = Sequential()
+        model.add(Dense(256, input_shape=(x_train.shape[1],), activation='sigmoid'))
         model.add(Dense(64, input_shape=(25,)))
         model.add(Dense(32, activation='relu'))
         model.add(Dense(32, activation='relu'))
         model.add(Dense(32, activation='relu'))
         model.add(Dense(32, activation='relu'))
         model.add(Dense(1))
-        model.compile(optimizer='adam',
-                      loss='mse',
+        model.compile(loss='mse',
+                      optimizer='adam',
                       metrics=['mse'])
 
     def compile(self):
@@ -185,6 +185,11 @@ class AITraderService(object):
         loss, mse = model.evaluate(x_test_scaled, y_test, batch_size=1)
         print(f'loss : {loss}')
         print(f'mse : {mse}')
+
+        y_pred = model.predict(x_test_scaled)
+
+        for i in range(5):
+            print(f'종가 :{y_test[i]}\n예측가 :{y_pred[i]}')
 
 
 if __name__ == '__main__':
