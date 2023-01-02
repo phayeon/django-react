@@ -26,8 +26,17 @@ const Navigation2 = () => {
             <BottomNavigationAction label="Fashion" icon={<FavoriteIcon/>} component={Link} to="/fashion"/>
             <BottomNavigationAction label="Number" icon={<FavoriteIcon/>} component={Link} to="/number"/>
             <BottomNavigationAction label="NaverMovie" icon={<FavoriteIcon/>} component={Link} to="/naver-movie"/>
+        </BottomNavigation>
+        <BottomNavigation
+            showLabels
+            value={value}
+            onChange={(event, newValue) => {
+            setValue(newValue);
+            }}
+        >
             <BottomNavigationAction label="Report" icon={<FavoriteIcon/>} component={Link} to="/report-view"/>
             <BottomNavigationAction label="UserList" icon={<FavoriteIcon/>} component={Link} to="/user-list"/>
+            <BottomNavigationAction label="Korean" icon={<FavoriteIcon/>} component={Link} to="/korean-classify-post"/>
         </BottomNavigation>
         </Box>
     );

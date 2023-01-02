@@ -6,7 +6,7 @@ import fashion from 'images/fashion.png'
 import { Number } from "movie"
 import { Iris, Stroke, Fashion } from "dlearn"
 import { NaverMovie } from "webcrawler"
-import { SamsungReport } from "nlp"
+import { SamsungReport, KoreanClassify } from "nlp"
 import UserList from "uat/containers/UserList"
 
 
@@ -37,6 +37,7 @@ const Home = () => {
                 <Route path="/naver-movie" element={<NaverMovie/>}></Route>
                 <Route path="/report-view" element={<SamsungReport/>}></Route>
                 <Route path="/user-list" element={<UserList/>}></Route>
+                <Route path="/korean-classify-post" element={<KoreanClassify/>}></Route>
             </Routes>
             </td>
         </tr>
