@@ -36,7 +36,7 @@ const Navigation2 = () => {
         >
             <BottomNavigationAction label="Report" icon={<FavoriteIcon/>} component={Link} to="/report-view"/>
             <BottomNavigationAction label="UserList" icon={<FavoriteIcon/>} component={Link} to="/user-list"/>
-            <BottomNavigationAction label="Korean" icon={<FavoriteIcon/>} component={Link} to="/korean-classify-post"/>
+            <BottomNavigationAction label="AiTrader" icon={<FavoriteIcon/>} component={Link} to="/aitrader"/>
         </BottomNavigation>
         </Box>
     );

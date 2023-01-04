@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from rest_framework.decorators import api_view
 import tensorflow as tf
 
+from dlearn.aitrader.services import AITraderService
 from dlearn.fashion.fashion_service import FashionService
 from dlearn.iris.iris_model import IrisModel
 from dlearn.iris.irls_service import IrisService
@@ -50,3 +51,8 @@ def iris_Post(request):
     print(f'꽃잎 길이 : {pl}')
     print(f'꽃잎 넓이 : {pw}')
     return JsonResponse({'예상되는 꽃의 이름 ': t.service_model(req)})
+
+@api_view(['POST'])
+def aiTrader_Post(request):
+    return JsonResponse({'result': AITraderService().hook(int(request.data))})
+

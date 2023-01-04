@@ -1,21 +1,24 @@
+import json
 import warnings
 
+import keras
 import numpy as np
 import pandas as pd
 from keras.callbacks import EarlyStopping
 from keras.layers import Dense
 from keras.models import Sequential
+from numpyencoder import NumpyEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from tensorflow.python.keras import Input
-from tensorflow.python.keras.callbacks import ModelCheckpoint
-from tensorflow.python.keras.layers import LSTM, concatenate
-from tensorflow.python.keras.models import Model
+from keras import Input
+from keras.callbacks import ModelCheckpoint
+from keras.layers import LSTM, concatenate
+from keras.models import Model
 from abc import abstractmethod, ABCMeta
 
+from tensorflow.python.keras.models import load_model
+
 warnings.filterwarnings('ignore')
-import pandas_datareader.data as web
-from pandas_datareader import data
 import platform
 import yfinance
 from prophet import Prophet
@@ -36,31 +39,29 @@ plt.rcParams['axes.unicode_minus'] = False
 Date    Open     High      Low    Close     Adj Close   Volume
 '''
 
-class AITrader(metaclass=ABCMeta):
-    @abstractmethod
-    def split_xy5(self, **kwargs): pass
 
+class AITraderBase (metaclass=ABCMeta):
     @abstractmethod
-    def create(self): pass
+    def csv_read(self, **kwargs): pass
 
-class AITraderService():
+
+class AITraderModel(AITraderBase):
     def __init__(self):
-        global start_data, end_data, item_code, check_DNN, check_LSTM, check_Esemble_DNN
+        global start_data, end_data, item_code, path
         start_data = "2018-01-04"
         end_data = "2022-12-31"
         item_code = "AMD"
-        check_DNN = ModelCheckpoint(r'C:\Users\AIA\PycharmProjects\django-react\DjangoServer\dlearn\aitrader\save\TraderDNN.h5', save_best_only=True)
-        check_LSTM = ModelCheckpoint(r'C:\Users\AIA\PycharmProjects\django-react\DjangoServer\dlearn\aitrader\save\TraderLSTM.h5', save_best_only=True)
-        check_Esemble_DNN = ModelCheckpoint(r'C:\Users\AIA\PycharmProjects\django-react\DjangoServer\dlearn\aitrader\save\TraderEsembleDNN.h5')
-        check_Esemble_LSTM = ModelCheckpoint(r'C:\Users\AIA\PycharmProjects\django-react\DjangoServer\dlearn\aitrader\save\TraderEsembleLSTM.h5')
+        path = r'C:\Users\AIA\PycharmProjects\django-react\DjangoServer\dlearn\aitrader\save'
 
 
-    def hook(self):
-        self.npy_save()
-        self.create_DNN_model()
-        self.create_LSTM_model()
-        # self.ensemble_DNN()
-        # self.ensemble_LSTM()
+    def hook(self, date):
+        # self.npy_save()
+        self.create_DNN_model(date)
+        # self.create_LSTM_model(date)
+        # self.ensemble_DNN(date)
+        # self.ensemble_LSTM(date)
+        print(data)
+        return date
 
     def AMD_predict(self):
         yfinance.pdr_override() # 없으면 에러 발생
@@ -82,58 +83,75 @@ class AITraderService():
         plt.plot(forecast['ds'], forecast['yhat'], label='forecast')
         plt.grid()
         plt.legend()
-        path = r'C:\Users\AIA\PycharmProjects\django-react\DjangoServer\dlearn\aitrader\save'
         print(f'path: {path}')
         plt.savefig(f'{path}\\AMD_close.png')
 
     def csv_read(self):
         global KOSPI200, SAMSUNG
-        KOSPI200 = pd.read_csv(r'C:\Users\AIA\PycharmProjects\django-react\DjangoServer\dlearn\aitrader\data\삼성전자.csv', index_col=0)
-        SAMSUNG = pd.read_csv(r'C:\Users\AIA\PycharmProjects\django-react\DjangoServer\dlearn\aitrader\data\005930 역사적 데이터.csv', index_col=0)
-        # print(KOSPI200)
-        # print(SAMSUNG)
+        KOSPI200 = pd.read_csv(r'C:\Users\AIA\PycharmProjects\django-react\DjangoServer\dlearn\aitrader\data\코스피200.csv', index_col=0).dropna()
+        SAMSUNG = pd.read_csv(r'C:\Users\AIA\PycharmProjects\django-react\DjangoServer\dlearn\aitrader\data\삼성전자.csv', index_col=0).dropna()
+        # print(KOSPI200.head(10))
+        # print(SAMSUNG.head(10))
 
     def data_sort(self):
         self.csv_read()
         global KOSPI200, SAMSUNG
 
-        for i in range(SAMSUNG['거래량'].shape[0]):
-            if pd.isna(SAMSUNG['거래량'][i]) == False:
-                SAMSUNG['거래량'][i] = float(SAMSUNG['거래량'][i][0:len(SAMSUNG['거래량'][i])-1])
-            else:
-                SAMSUNG['거래량'][i] = 0
+        print(KOSPI200.head(10))
+        print(SAMSUNG.head(10))
 
-        for i in range(SAMSUNG['변동 %'].shape[0]):
-            if pd.isna(SAMSUNG['변동 %'][i]) == True:
-                SAMSUNG['변동 %'][i] = 0
-            else:
-                SAMSUNG['변동 %'][i] = float(SAMSUNG['변동 %'][i][0:len(SAMSUNG['변동 %'][i])-1])
+        for i in range(KOSPI200.shape[0]):
+            if '%' in KOSPI200.iloc[i, 5]:
+                KOSPI200.iloc[i, 5] = float(KOSPI200.iloc[i, 5][0:len(KOSPI200.iloc[i, 5]) - 1])
 
-        for i in range(KOSPI200['거래량'].shape[0]):
-            if pd.isna(KOSPI200['거래량'][i]) == False:
-                KOSPI200['거래량'][i] = float(KOSPI200['거래량'][i][0:len(KOSPI200['거래량'][i])-1])
-            else:
-                KOSPI200['거래량'][i] = 0
+        for i in range(SAMSUNG.shape[0]):
+            if '%' in SAMSUNG.iloc[i, 5]:
+                SAMSUNG.iloc[i, 5] = float(SAMSUNG.iloc[i, 5][0:len(SAMSUNG.iloc[i, 5]) - 1])
+        '''
+        for i in range(KOSPI200.shape[0]):
+            if "-" in KOSPI200.iloc[i, 0]:
+                KOSPI200.iloc[i, 0] = KOSPI200.iloc[i, 0].replace('- ', '')
+                KOSPI200.iloc[i, 0] = pd.to_datetime(KOSPI200.iloc[i, 0], format='%Y%m%d')
 
-        for i in range(KOSPI200['변동 %'].shape[0]):
-            if pd.isna(KOSPI200['변동 %'][i]) == True:
-                KOSPI200['변동 %'][i] = 0
-            else:
-                KOSPI200['변동 %'][i] = float(KOSPI200['변동 %'][i][0:len(KOSPI200['변동 %'][i])-1])
+        for i in range(SAMSUNG.shape[0]):
+            if "-" in SAMSUNG.iloc[i, 0]:
+                SAMSUNG.iloc[i, 0] = SAMSUNG.iloc[i, 0].replace('- ', '')
+                SAMSUNG.iloc[i, 0] = pd.to_datetime(SAMSUNG.iloc[i, 0], format='%Y%m%d')
+        '''
 
-        for i in range(SAMSUNG['거래량'].shape[0]):
+        for i in range(KOSPI200.shape[0]):
+            if "M" in KOSPI200.iloc[i, 4]:
+                KOSPI200.iloc[i, 4] = KOSPI200.iloc[i, 4].replace('M', '')
+                KOSPI200.iloc[i, 4] = int(float(KOSPI200.iloc[i, 4]) * 1000000)
+                for j in range(1, 4):
+                    KOSPI200.iloc[i, j] = int(float(KOSPI200.iloc[i, j]) * 100)
+            elif "K" in KOSPI200.iloc[i, 4]:
+                KOSPI200.iloc[i, 4] = KOSPI200.iloc[i, 4].replace('K', '')
+                KOSPI200.iloc[i, 4] = int(float(KOSPI200.iloc[i, 4]) * 1000)
+                for j in range(1, 4):
+                    KOSPI200.iloc[i, j] = int(float(KOSPI200.iloc[i, j]) * 100)
+
+        for i in range(SAMSUNG.shape[0]):
+            if "M" in SAMSUNG.iloc[i, 4]:
+                SAMSUNG.iloc[i, 4] = SAMSUNG.iloc[i, 4].replace('M', '')
+                SAMSUNG.iloc[i, 4] = int(float(SAMSUNG.iloc[i, 4]) * 1000000)
+            elif "K" in SAMSUNG.iloc[i, 4]:
+                SAMSUNG.iloc[i, 4] = SAMSUNG.iloc[i, 4].replace('K', '')
+                SAMSUNG.iloc[i, 4] = int(float(SAMSUNG.iloc[i, 4]) * 1000)
+
+        for i in range(KOSPI200.shape[0]):
             for j in range(0, 4):
-                SAMSUNG.iloc[i, j] = float(SAMSUNG.iloc[i, j].replace(',', ''))
+                KOSPI200.iloc[i, j] = float(str(KOSPI200.iloc[i, j]).replace(',', ''))
 
-        for i in range(KOSPI200['거래량'].shape[0]):
+        for i in range(SAMSUNG.shape[0]):
             for j in range(0, 4):
-                KOSPI200.iloc[i, j] = float(KOSPI200.iloc[i, j].replace(',', ''))
+                SAMSUNG.iloc[i, j] = float(str(SAMSUNG.iloc[i, j]).replace(',', ''))
 
         KOSPI200 = KOSPI200.sort_values(['날짜'], ascending=[True])
         SAMSUNG = SAMSUNG.sort_values(['날짜'], ascending=[True])
 
-        # print(KOSPI200.head(3))
-        # print(SAMSUNG.head(6))
+        print(KOSPI200.head(10))
+        print(SAMSUNG.head(10))
 
     def npy_save(self):
         self.data_sort()
@@ -161,7 +179,7 @@ class AITraderService():
             y.append(tmp_y)
         return np.array(x).astype(np.float32), np.array(y).astype(np.float32)
 
-    def split_DNN(self):
+    def split_Common(self):
         self.npy_read()
         global x_train, x_test, y_train, y_test
         x, y = self.split_xy6(SAMSUNG, 6, 1)
@@ -174,7 +192,7 @@ class AITraderService():
 
     def split_LSTM(self):
         global x_train_scaled, x_test_scaled
-        self.split_DNN()
+        self.split_Common()
         x_train_scaled, x_test_scaled = self.preprocess(x_train, x_test)
         x_train_scaled = np.reshape(x_train_scaled, (x_train_scaled.shape[0], 6, 6))
         x_test_scaled = np.reshape(x_test_scaled, (x_test_scaled.shape[0], 6, 6))
@@ -186,36 +204,6 @@ class AITraderService():
         scaler.fit(x_train)
         return scaler.transform(x_train), scaler.transform(x_test)
 
-    def create_DNN_model(self):
-        global model
-        self.split_DNN()
-        model = Sequential()
-        model.add(Dense(256, input_shape=(x_train.shape[1],), activation='sigmoid'))
-        model.add(Dense(64, input_shape=(25,)))
-        model.add(Dense(32, activation='relu'))
-        model.add(Dense(32, activation='relu'))
-        model.add(Dense(32, activation='relu'))
-        model.add(Dense(32, activation='relu'))
-        model.add(Dense(1))
-        model.compile(loss='mse',
-                      optimizer='adam',
-                      metrics=['mse'])
-        self.compile(x_train_scaled, x_test_scaled, y_train, y_test, model, filename='DNN_model')
-
-    def create_LSTM_model(self):
-        global model
-        self.split_LSTM()
-        model = Sequential()
-        model.add(LSTM(64, input_shape=(6, 6)))
-        model.add(Dense(32, activation='relu'))
-        model.add(Dense(32, activation='relu'))
-        model.add(Dense(32, activation='relu'))
-        model.add(Dense(32, activation='relu'))
-        model.add(Dense(1))
-        model.compile(loss='mse',
-                      optimizer='adam',
-                      metrics=['mse'])
-        self.compile(x_train_scaled, x_test_scaled, y_train, y_test, model, filename='LSTM_model')
 
     def ensemble_common(self):
         global x1_train, x1_test, y1_train, y1_test, x2_train, x2_test, y2_train, y2_test
@@ -235,7 +223,45 @@ class AITraderService():
         x2_test = np.reshape(x2_test, (x2_test.shape[0], x2_test.shape[1] * x2_test.shape[2]))
         # print(x2_train.shape)
 
-    def ensemble_DNN(self):
+
+    def compile(self, date, x_train_scaled, x_test_scaled, y_train, y_test, model, filename):
+        global data
+        early_stopping = EarlyStopping(patience=20)
+        model.fit(x_train_scaled, y_train, validation_split=0.2, verbose=1,
+                  batch_size=1, epochs=1, callbacks=[early_stopping])
+
+        loss, mse = model.evaluate(x_test_scaled, y_test, batch_size=1)
+        print(f'loss : {loss}')
+        print(f'mse : {mse}')
+
+        y_pred = model.predict(x_test_scaled)
+
+        data = []
+        [data.append({'종가': json.dumps(y_test[i], cls=NumpyEncoder),
+                      '예측가': json.dumps(y_pred[i], cls=NumpyEncoder)})
+         for i in range(date)]
+
+        model.save(f'{path}\\{filename}.h5')
+
+
+class create_LSTM_model(AITraderModel):
+    def creat(self):
+        self.split_LSTM()
+        model = Sequential()
+        model.add(LSTM(64, input_shape=(6, 6)))
+        model.add(Dense(32, activation='relu'))
+        model.add(Dense(32, activation='relu'))
+        model.add(Dense(32, activation='relu'))
+        model.add(Dense(32, activation='relu'))
+        model.add(Dense(1))
+        model.compile(loss='mse',
+                      optimizer='adam',
+                      metrics=['mse'])
+        self.compile(date, x_train_scaled, x_test_scaled, y_train, y_test, model, filename='LSTM_model')
+
+
+class create_EnsembleDNN_model(AITraderModel):
+    def creat(self):
         self.ensemble_common()
 
         x1_train_scaled, x1_test_scaled = self.preprocess(x1_train, x1_test)
@@ -261,10 +287,12 @@ class AITraderService():
         model = Model(inputs=[input1, input2], outputs=output3)
         model.compile(loss='mse', optimizer='adam', metrics=['mse'])
 
-        self.compile([x1_train_scaled, x2_train_scaled], [x1_test_scaled, x2_test_scaled],
+        self.compile(date, [x1_train_scaled, x2_train_scaled], [x1_test_scaled, x2_test_scaled],
                      y1_train, y1_test, model, filename='ensemble_DNN')
 
-    def ensemble_LSTM(self):
+
+class create_EnsembleLSTM_model(AITraderModel):
+    def creat(self):
         self.ensemble_common()
 
         x1_train_scaled, x1_test_scaled = self.preprocess(x1_train, x1_test)
@@ -295,27 +323,10 @@ class AITraderService():
         model = Model(inputs=[input1, input2], outputs=output3)
         model.compile(loss='mse', optimizer='adam', metrics=['mse'])
 
-        self.compile([x1_train_scaled, x2_train_scaled], [x1_test_scaled, x2_test_scaled],
+        self.compile(date, [x1_train_scaled, x2_train_scaled], [x1_test_scaled, x2_test_scaled],
                      y1_train, y1_test, model, filename='ensemble_LSTM')
-
-    def compile(self, x_train_scaled, x_test_scaled, y_train, y_test, model, filename):
-        early_stopping = EarlyStopping(patience=20)
-        model.fit(x_train_scaled, y_train, validation_split=0.2, verbose=1,
-                  batch_size=1, epochs=100, callbacks=[early_stopping])
-
-        loss, mse = model.evaluate(x_test_scaled, y_test, batch_size=1)
-        print(f'loss : {loss}')
-        print(f'mse : {mse}')
-
-        y_pred = model.predict(x_test_scaled)
-
-        for i in range(5):
-            print(f'종가 :{y_test[i]}\n예측가 :{y_pred[i]}')
-
-        path = r'C:\Users\AIA\PycharmProjects\django-react\DjangoServer\dlearn\aitrader\save'
-        model.save(f'{path}\\{filename}.h5')
 
 
 if __name__ == '__main__':
-    AITraderService().hook()
+    AITraderModel().hook(5)
 

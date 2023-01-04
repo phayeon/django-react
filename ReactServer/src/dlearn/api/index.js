@@ -1,6 +1,6 @@
 import { server, dlearn } from '../../context'
 
-const dlearnService = { fashionGet, fashionPost, strokeCheck, irisPost, irisGet }
+const dlearnService = { fashionGet, fashionPost, strokeCheck, irisPost, irisGet, aitraderPost }
 
 function handleResponse(response){ 
     return response.text()
@@ -79,6 +79,21 @@ async function irisGet(){
     .catch((error) => {
         alert('error :::: '+error);
     });
+}
+
+async function aitraderPost(date){
+    const requestOption = {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(date)
+    }
+    const res = await fetch(`${server}${dlearn}aitrader-post`, requestOption)
+    .then(handleResponse)
+    .then(data => JSON.stringify(data))
+    .catch((error) => {
+        alert('error :::: '+error);
+    });
+    return Promise.resolve(res);
 } 
 
 export default dlearnService

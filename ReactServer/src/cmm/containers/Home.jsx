@@ -4,9 +4,9 @@ import {Schedule} from "cop"
 import {LoginForm, SignUp} from "uat"
 import fashion from 'images/fashion.png'
 import { Number } from "movie"
-import { Iris, Stroke, Fashion } from "dlearn"
+import { Iris, Stroke, Fashion, AiTrader } from "dlearn"
 import { NaverMovie } from "webcrawler"
-import { SamsungReport, KoreanClassify } from "nlp"
+import { SamsungReport } from "nlp"
 import UserList from "uat/containers/UserList"
 
 
@@ -37,7 +37,7 @@ const Home = () => {
                 <Route path="/naver-movie" element={<NaverMovie/>}></Route>
                 <Route path="/report-view" element={<SamsungReport/>}></Route>
                 <Route path="/user-list" element={<UserList/>}></Route>
-                <Route path="/korean-classify-post" element={<KoreanClassify/>}></Route>
+                <Route path="/aitrader" element={<AiTrader/>}></Route>
             </Routes>
             </td>
         </tr>
