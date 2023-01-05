@@ -7,5 +7,5 @@ urlpatterns = [
     url(r'irisget', views.iris_Get),
     url(r'stroke', views.stroke),
     url(r'fashion', views.fashion),
-    url(r'aitrader', views.aiTrader_Post)
+    url(r'aitrader-post', views.aiTrader_Post)
 ]

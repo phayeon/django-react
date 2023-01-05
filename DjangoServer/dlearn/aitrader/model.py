@@ -1,5 +1,6 @@
 import json
 import warnings
+from enum import Enum
 
 import numpy as np
 import pandas as pd
@@ -35,12 +36,57 @@ Date    Open     High      Low    Close     Adj Close   Volume
 '''
 
 
+class ModelType(Enum):
+    dnn_model = 1
+    dnn_ensemble = 2
+    lstm_model = 3
+    lstm_ensemble = 4
+
+
+class H5FileNames(Enum):
+    dnn_model = "DNN_model.h5"
+    dnn_ensemble = "ensemble_DNN.h5"
+    lstm_model = "LSTM_model.h5"
+    lstm_ensemble = "ensemble_LSTM.h5"
+
+
+class Activations(Enum):
+    relu = 'relu'
+
+
 class AITraderBase (metaclass=ABCMeta):
+    @abstractmethod
+    def hook(self, param): pass
+
     @abstractmethod
     def csv_structured(self): pass
 
+    @abstractmethod
+    def npy_save(self): pass
 
-class AITraderModel(AITraderBase, ABC):
+    @abstractmethod
+    def npy_read(self): pass
+
+    @abstractmethod
+    def split_dataset(self): pass
+
+    @abstractmethod
+    def split_xy6(self, *args): pass
+
+    @abstractmethod
+    def split_ensemble(self): pass
+
+    @abstractmethod
+    def preprocess(self, *args): pass
+
+    @abstractmethod
+    def compile(self): pass
+
+    @abstractmethod
+    def predict(self, *args): pass
+
+
+class AITraderModel(AITraderBase):
     def __init__(self):
         global path, KOSPI200, SAMSUNG
         path = r'C:\Users\AIA\PycharmProjects\django-react\DjangoServer\dlearn\aitrader\save'
@@ -54,8 +100,6 @@ class AITraderModel(AITraderBase, ABC):
         # self.npy_save()
         self.npy_read()
         self.split_dataset()
-        # create_LSTM_model().create()
-        create_LSTM_model().model_test(date)
 
     def csv_structured(self):
         global KOSPI200, SAMSUNG
@@ -118,6 +162,23 @@ class AITraderModel(AITraderBase, ABC):
             y.append(tmp_y)
         return np.array(x).astype(np.float32), np.array(y).astype(np.float32)
 
+    def split_ensemble(self):
+        global x1_train, x1_test, y1_train, y1_test, x2_train, x2_test, y2_train, y2_test
+        x1, y1 = self.split_xy6(SAMSUNG, 6, 3)
+        x2, y2 = self.split_xy6(KOSPI200, 6, 3)
+        # print(x2[0, :], '\n', y2[0])
+        # print(x2.shape)
+
+        x1_train, x1_test, y1_train, y1_test = train_test_split(x1, y1, random_state=1, test_size=0.3)
+        x2_train, x2_test, y2_train, y2_test = train_test_split(x2, y2, random_state=2, test_size=0.3)
+        # print(x2_train.shape)
+
+        x1_train = np.reshape(x1_train, (x1_train.shape[0], x1_train.shape[1] * x1_train.shape[2]))
+        x1_test = np.reshape(x1_test, (x1_test.shape[0], x1_test.shape[1] * x1_test.shape[2]))
+        x2_train = np.reshape(x2_train, (x2_train.shape[0], x2_train.shape[1] * x2_train.shape[2]))
+        x2_test = np.reshape(x2_test, (x2_test.shape[0], x2_test.shape[1] * x2_test.shape[2]))
+        # print(x2_train.shape)
+
     def preprocess(self, *args):
         scaler = StandardScaler()
         scaler.fit(args[0])
@@ -125,37 +186,48 @@ class AITraderModel(AITraderBase, ABC):
 
     def compile(self, *args):
         early_stopping = EarlyStopping(patience=20)
-        args[0].fit(args[1], y_train, validation_split=0.2, verbose=1,
+        args[0].fit(args[1], args[3], validation_split=0.2, verbose=1,
                   batch_size=1, epochs=100, callbacks=[early_stopping])
 
-        loss, mse = args[0].evaluate(args[2], y_test, batch_size=1)
+        loss, mse = args[0].evaluate(args[2], args[4], batch_size=1)
         print(f'loss :{loss} / mse :{mse}')
 
         y_pred = args[0].predict(args[2])
 
         data = []
-        [data.append({'종가': json.dumps(y_test[i], cls=NumpyEncoder),
+        [data.append({'종가': json.dumps(args[4][i], cls=NumpyEncoder),
                       '예측가': json.dumps(y_pred[i], cls=NumpyEncoder)})
          for i in range(5)]
 
-        args[0].save(f'{path}\\{args[3]}.h5')
+        print(data)
+        args[0].save(f'{path}\\{args[5]}')
 
     def predict(self, *args):
-        model.load_weights(f'{path}\\{args[2]}.h5')
-        loss, mse = args[0].evaluate(args[1], y_test, batch_size=1)
+        global data
+        model.load_weights(f'{path}\\{args[3]}')
+        loss, mse = args[0].evaluate(args[1], args[2], batch_size=1)
         print(f'loss :{loss} / mse :{mse}')
 
         y_pred = args[0].predict(args[1])
 
         data = []
-        [data.append({'종가': json.dumps(y_test[i], cls=NumpyEncoder),
-                            '예측가': json.dumps(y_pred[i], cls=NumpyEncoder)})
-               for i in range(args[3])]
+        [data.append({'종가': json.dumps(args[2][i], cls=NumpyEncoder),
+                      '예측가': json.dumps(y_pred[i], cls=NumpyEncoder)})
+         for i in range(args[4])]
 
         print(data)
+        return data
 
 
 class create_DNN_model(AITraderModel):
+    def hook(self, date):
+        super().npy_read()
+        super().split_dataset()
+        self.model()
+        # self.create()
+        self.model_test(date)
+        return data
+
     def model(self):
         global model, x_train_scaled, x_test_scaled, filename
 
@@ -173,18 +245,24 @@ class create_DNN_model(AITraderModel):
                       optimizer='adam',
                       metrics=['mse'])
 
-        filename = 'DNN_model'
+        filename = H5FileNames.dnn_model
 
     def create(self):
-        self.model()
-        super().compile(model, x_train_scaled, x_test_scaled, filename)
+        super().compile(model, x_train_scaled, x_test_scaled, y_train, y_test, filename)
 
     def model_test(self, date):
-        self.model()
-        super().predict(model, x_test_scaled, filename, date)
+        super().predict(model, x_test_scaled, y_test, filename, date)
 
 
 class create_LSTM_model(AITraderModel):
+    def hook(self, date):
+        super().npy_read()
+        super().split_dataset()
+        self.model()
+        # self.create()
+        self.model_test(date)
+        return data
+
     def model(self):
         global model, x_train_scaled, x_test_scaled, filename
 
@@ -194,7 +272,6 @@ class create_LSTM_model(AITraderModel):
         x_train_scaled = np.reshape(x_train_scaled, (x_train_scaled.shape[0], 6, 6))
         x_test_scaled = np.reshape(x_test_scaled, (x_test_scaled.shape[0], 6, 6))
 
-        filename = 'LSTM_model'
         model = Sequential()
         model.add(LSTM(64, input_shape=(6, 6)))
         model.add(Dense(32, activation='relu'))
@@ -206,15 +283,112 @@ class create_LSTM_model(AITraderModel):
                       optimizer='adam',
                       metrics=['mse'])
 
+        filename = H5FileNames.lstm_model
+
     def create(self):
-        self.model()
-        super().compile(model, x_train_scaled, x_test_scaled, filename)
+        super().compile(model, x_train_scaled, x_test_scaled, y_train, y_test, filename)
 
     def model_test(self, date):
-        self.model()
-        super().predict(model, x_test_scaled, filename, date)
+        super().predict(model, x_test_scaled, y_test, filename, date)
 
+
+class create_DNN_Emsemble(AITraderModel):
+    def hook(self, date):
+        super().npy_read()
+        super().split_dataset()
+        super().split_ensemble()
+        self.model()
+        # self.create()
+        self.model_test(date)
+        return data
+
+    def model(self):
+        global model, x1_train_scaled, x1_test_scaled, x2_train_scaled, x2_test_scaled, filename
+        x1_train_scaled, x1_test_scaled = self.preprocess(x1_train, x1_test)
+        x2_train_scaled, x2_test_scaled = self.preprocess(x2_train, x2_test)
+        # print(x2_train_scaled[0, :])
+
+        input1 = Input(shape=(36,))
+        dense1 = Dense(64)(input1)
+        dense1 = Dense(32)(dense1)
+        dense1 = Dense(32)(dense1)
+        output1 = Dense(32)(dense1)
+
+        input2 = Input(shape=(36,))
+        dense2 = Dense(64)(input2)
+        dense2 = Dense(64)(dense2)
+        dense2 = Dense(64)(dense2)
+        dense2 = Dense(64)(dense2)
+        output2 = Dense(32)(dense2)
+
+        merge = concatenate([output1, output2])
+        output3 = Dense(1)(merge)
+
+        model = Model(inputs=[input1, input2], outputs=output3)
+        model.compile(loss='mse', optimizer='adam', metrics=['mse'])
+
+        filename = H5FileNames.dnn_ensemble
+
+    def create(self):
+        super().compile(model, [x1_train_scaled, x2_train_scaled], [x1_test_scaled, x2_test_scaled],
+                        y1_train, y1_test, filename)
+
+    def model_test(self, date):
+        super().predict(model, [x1_test_scaled, x2_test_scaled], y1_test, filename, date)
+
+
+class create_LSTM_Emsemble(AITraderModel):
+    def hook(self, date):
+        super().npy_read()
+        super().split_dataset()
+        super().split_ensemble()
+        self.model()
+        self.create()
+        self.model_test(date)
+        return data
+
+    def model(self):
+        global model, x1_train_scaled, x1_test_scaled, x2_train_scaled, x2_test_scaled, filename
+        x1_train_scaled, x1_test_scaled = self.preprocess(x1_train, x1_test)
+        x2_train_scaled, x2_test_scaled = self.preprocess(x2_train, x2_test)
+        # print(x2_train_scaled[0, :])
+
+        x1_train_scaled = np.reshape(x1_train_scaled, (x1_train_scaled.shape[0], 6, 6))
+        x1_test_scaled = np.reshape(x1_test_scaled, (x1_test_scaled.shape[0], 6, 6))
+        x2_train_scaled = np.reshape(x2_train_scaled, (x2_train_scaled.shape[0], 6, 6))
+        x2_test_scaled = np.reshape(x2_test_scaled, (x2_test_scaled.shape[0], 6, 6))
+
+        input1 = Input(shape=(6, 6))
+        dense1 = LSTM(64)(input1)
+        dense1 = Dense(32)(dense1)
+        dense1 = Dense(32)(dense1)
+        output1 = Dense(32)(dense1)
+
+        input2 = Input(shape=(6, 6))
+        dense2 = LSTM(64)(input2)
+        dense2 = Dense(64)(dense2)
+        dense2 = Dense(64)(dense2)
+        dense2 = Dense(64)(dense2)
+        output2 = Dense(32)(dense2)
+
+        merge = concatenate([output1, output2])
+        output3 = Dense(1)(merge)
+
+        model = Model(inputs=[input1, input2], outputs=output3)
+        model.compile(loss='mse', optimizer='adam', metrics=['mse'])
+
+        filename = H5FileNames.lstm_ensemble
+
+    def create(self):
+        super().compile(model, [x1_train_scaled, x2_train_scaled], [x1_test_scaled, x2_test_scaled],
+                        y1_train, y1_test, filename)
+
+    def model_test(self, date):
+        super().predict(model, [x1_test_scaled, x2_test_scaled], y1_test, filename, date)
 
 
 if __name__ == '__main__':
-    AITraderModel().hook(5)
+    # create_DNN_model().hook(5)
+    # create_LSTM_model().hook(5)
+    # create_DNN_Emsemble().hook(5)
+    create_LSTM_Emsemble().hook(2)

@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from rest_framework.decorators import api_view
 import tensorflow as tf
 
-from dlearn.aitrader.services import AITraderService
+from dlearn.aitrader.model import create_LSTM_Emsemble
 from dlearn.fashion.fashion_service import FashionService
 from dlearn.iris.iris_model import IrisModel
 from dlearn.iris.irls_service import IrisService
@@ -54,5 +54,5 @@ def iris_Post(request):
 
 @api_view(['POST'])
 def aiTrader_Post(request):
-    return JsonResponse({'result': AITraderService().hook(int(request.data))})
+    return JsonResponse({'result': create_LSTM_Emsemble().hook(int(request.data))})
 
