@@ -87,6 +87,18 @@ class AITraderBase (metaclass=ABCMeta):
 
 
 class AITraderModel(AITraderBase):
+    @abstractmethod
+    def hook(self, param): pass
+
+    @abstractmethod
+    def model(self): pass
+
+    @abstractmethod
+    def create(self): pass
+
+    @abstractmethod
+    def model_test(self, param): pass
+
     def __init__(self):
         global path, KOSPI200, SAMSUNG
         path = r'C:\Users\AIA\PycharmProjects\django-react\DjangoServer\dlearn\aitrader\save'
@@ -164,8 +176,8 @@ class AITraderModel(AITraderBase):
 
     def split_ensemble(self):
         global x1_train, x1_test, y1_train, y1_test, x2_train, x2_test, y2_train, y2_test
-        x1, y1 = self.split_xy6(SAMSUNG, 6, 3)
-        x2, y2 = self.split_xy6(KOSPI200, 6, 3)
+        x1, y1 = self.split_xy6(SAMSUNG, 6, 1)
+        x2, y2 = self.split_xy6(KOSPI200, 6, 1)
         # print(x2[0, :], '\n', y2[0])
         # print(x2.shape)
 
