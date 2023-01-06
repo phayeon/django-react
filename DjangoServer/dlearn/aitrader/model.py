@@ -355,7 +355,7 @@ class create_LSTM_Emsemble(AITraderModel):
         super().split_dataset()
         super().split_ensemble()
         self.model()
-        self.create()
+        # self.create()
         self.model_test(date)
         return data
 
