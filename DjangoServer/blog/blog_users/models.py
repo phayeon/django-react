@@ -13,5 +13,3 @@ class BlogUser(models.Model):
     class Meta:
         db_table = "blog_users"
 
-    def __str__(self):
-        return f'{self.pk} {self.email} {self.nickname}'

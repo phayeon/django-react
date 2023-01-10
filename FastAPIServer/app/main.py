@@ -1,27 +1,30 @@
 import os
 import sys
+from fastapi_sqlalchemy.middleware import DBSessionMiddleware
 
-import uvicorn
+from .env import DB_url
 
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 baseurl = os.path.dirname(os.path.abspath(__file__))
-from app.api.endpoints.url import Url
 
-from fastapi import FastAPI
-from app.models.user import User
+from fastapi import FastAPI, APIRouter
+from .routers.user import router as user_router
+from .routers.post import router as post_router
+
+router = APIRouter()
+router.include_router(user_router, prefix="/users", tags=["users"])
+router.include_router(post_router, prefix="/posts", tags=["posts"])
 
 app = FastAPI()
+app.include_router(router)
+app.add_middleware(DBSessionMiddleware, db_url=DB_url)
+
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return {"message ": " Welcome Fastapi"}
 
 
 @app.get("/hello/{name}")
 async def say_hello(name: str):
     return {"message": f"Hello {name}"}
-
-
-@app.post('blog/login')
-async def login(user: User):
-    print(f'React 에서 넘긴 정보 :{user.get_email()}, {user.get_password()}')

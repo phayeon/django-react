@@ -3,3 +3,4 @@ sqlalchemy
 uvicorn
 fastapi
 pymysql
+FastAPI-SQLAlchemy==0.2.1

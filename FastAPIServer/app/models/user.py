@@ -1,12 +1,15 @@
-from pydantic import BaseModel
+from ..database import Base
+from sqlalchemy import Column, String
 
 
-class User(BaseModel):
-    email: str
-    password: str
+class User(Base):
+    __tablename__ = "users"
 
-    def get_email(self):
-        return self.email
+    user_id = Column(String(20), primary_key=True)
+    email = Column(String(20), nullable=False)
+    password = Column(String(20), nullable=False)
+    user_name = Column(String(20))
+    token = Column(String(20))
 
-    def get_password(self):
-        return self.password
+    class Config:
+        arbitrary_types_allowed = True
